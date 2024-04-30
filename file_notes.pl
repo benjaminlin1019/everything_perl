@@ -1,10 +1,13 @@
 #!/usr/bin/perl
 use List::Util qw( min max);
+use Cwd qw(abs_path);
 
 sub file_fun() {
 
     # play with username.csv
-    open($fh, "<", "username.csv");
+    my $file = "username.csv";
+    my $path = abs_path();
+    open($fh, "<", "$path/everything_perl/username.csv");
     $total = 0;
     @all_ids = ();
     while ($line = <$fh>){

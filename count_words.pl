@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use utf8;
 use Text::Unidecode;
+use Cwd qw(abs_path);
 
 sub read_line {
     our %words_count;
@@ -35,7 +36,9 @@ sub build_dict {
     return %dict;
 }
 
-$file = "/Users/blin/Downloads/the_great_gatsby.txt";
+my $file = "the_great_gatsby.txt";
+my $path = abs_path();
+$file = "$path/everything_perl/$file";
 print "$file exists!\n" if -e $file;
 
 %words_count;
