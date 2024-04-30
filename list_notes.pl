@@ -10,6 +10,30 @@ sub list_fun {
     print "\$names[0] = $names[0]\n";
     print "\$names[-1] = $names[-1]\n";
 
+    # add things to array
+    # method 1:
+    my @array;
+    push @array, 1;
+    push @array, 2;
+    print("my array: @array\n");
+
+    # method 2:
+    my @array;
+    $array[0] = 10;
+    $array[1] = 11;
+
+    my @subarray = (1,2,3);
+    # I skip index 2...
+    $array[3] = \@subarray;
+    print("my array: @array\n");
+
+    # iterate array
+    print "subarray => ";
+    foreach (@subarray) {
+        print ("$_ ");
+    }
+    print "\n";
+    
     # slice list
     @names = ("A", "B", "C", "D");
     @new_names[0, 1] = @names[1,3];
