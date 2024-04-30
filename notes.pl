@@ -151,6 +151,16 @@ sub hash_fun {
     keys(%users) = 512;
     $size = keys %users;
 
+    # for larger hash, better to pass hash as reference
+    my $hash;
+    print_hash(\%hash);
+}
+
+sub print_hash {
+    my $myhash = shift;
+    while ((my $key, my $value) = each %$myhash){
+        print "%key => $value\n";
+    }
 }
 ########
 # Misc #
@@ -397,8 +407,6 @@ sub regular_expr_fun {
 
     # Exercises:    
     my $exe_pat;
-    # $ exe_pat = '^(pre)\w*(al)$'
-    
     # Find all the words that begin with a|b and end with a|b. The list should include
     # “adverb” and “balalaika”.
     # $ exe_pat = '^(a|b)\w*(a|b)$';
