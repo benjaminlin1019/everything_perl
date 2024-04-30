@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+# https://www.greenteapress.com/perl/perl.pdf
+# Markov Generator chapter 3.9, page 34
 use warnings;
 use strict;
 use Time::HiRes qw(usleep nanosleep);
