@@ -15,4 +15,4 @@ print reverse_list(@list1), "\n";
 
 @list1 = (1..4);
 print reverse_list(@list1), "\n";
-
+print (reverse @list1);

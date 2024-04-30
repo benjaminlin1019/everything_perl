@@ -8,6 +8,15 @@ use Cwd qw(abs_path);
 
 our @prefix;  # store currently seen two words
 our %hash;    # Markov hash that key is two words and value is an array storing all words appear after the two words from the key.
+# this data struture is used to store the prefix sum of each suffix list weight sum mapping to the ascending frequency order of the suffix 
+# For example:
+# {"a": 9, "b": 2, "c": 5}
+# so the suffix sum will start with 2, and 2+5 and 2+5+9
+# %prefix_sum = {"my word": [2, 7, 16]}
+# this prefix sum array will then be used to do the random selection by using the binary search technique for the words to be returned in their 
+# corresponding probability based the frequency.
+# For example: if a random number between 1 to 16, shows 3, then the "c" will be choosen, if random number shows up 10 (between 8 ~ 16), then "a" 
+# will be choosen.
 our %prefix_sum;
 
 sub read_file {
@@ -77,16 +86,6 @@ sub triple_words_using_hash_count {
 #############
 
 sub rand_elt {$_[rand @_]}  # first $_ is input, @_ is the input but in array form so the rand @_ will evaluate @_ as array size.
-# this data struture is used to store the prefix sum of each suffix list weight sum mapping to the ascending frequency order of the suffix 
-# For example:
-# {"a": 9, "b": 2, "c": 5}
-# so the suffix sum will start with 2, and 2+5 and 2+5+9
-# %prefix_sum = {"my word": [2, 7, 16]}
-# this prefix sum array will then be used to do the random selection by using the binary search technique for the words to be returned in their 
-# corresponding probability based the frequency.
-# For example: if a random number between 1 to 16, shows 3, then the "c" will be choosen, if random number shows up 10 (between 8 ~ 16), then "a" 
-# will be choosen.
- 
 
 sub build_prefix_sum {    
     our %hash;
