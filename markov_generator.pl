@@ -1,17 +1,21 @@
 #!/usr/bin/perl
+use warnings;
+use strict;
 use Time::HiRes qw(usleep nanosleep);
 use utf8;
 use Text::Unidecode;
+use Cwd qw(abs_path);
 
-@prefix;  # store currently seen two words
-%hash;    # Markov hash that key is two words and value is an array storing all words appear after the two words from the key.
-%prefix_sum;
+our @prefix;  # store currently seen two words
+our %hash;    # Markov hash that key is two words and value is an array storing all words appear after the two words from the key.
+our %prefix_sum;
 
 sub read_file {
     my $file = shift;
     my $subref = shift || \&read_line;
-    open FILE, $file;
-    while (my $line = <FILE>) {
+    my $fh;
+    open $fh, $file or die "$file can not be opened, $!";
+    while (my $line = <$fh>) {
         chomp $line;
         $subref->($line);
     }
@@ -28,7 +32,7 @@ sub read_line {
     }
 }
 
-sub triple_words {
+sub triple_words {    
     our(@prefix, %hash);
     my $word = shift;
 
@@ -68,10 +72,6 @@ sub triple_words_using_hash_count {
     push @prefix, $word; # append current word to prefix
 }
 
-$file = "/Users/blin/Downloads/the_great_gatsby.txt";
-read_file($file);
-build_prefix_sum();
-
 #############
 # Generator #
 #############
@@ -89,6 +89,8 @@ sub rand_elt {$_[rand @_]}  # first $_ is input, @_ is the input but in array fo
  
 
 sub build_prefix_sum {    
+    our %hash;
+    our %prefix_sum;
     while ((my $prefix, my $words) = each %hash) {
         my @sorted_words = sort {$words->{$a} <=> $words->{$b}} keys %$words;
         my $total = 0;
@@ -164,4 +166,8 @@ sub random_text {
     return $text . "\n";
 }
 
+my $file = "the_great_gatsby.txt";
+my $path = abs_path();
+read_file("$path/everything_perl/$file");
+build_prefix_sum();
 print(random_text());
