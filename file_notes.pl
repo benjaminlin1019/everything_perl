@@ -7,7 +7,7 @@ sub file_fun() {
     # play with username.csv
     my $file = "username.csv";
     my $path = abs_path();
-    open($fh, "<", "$path/everything_perl/username.csv");
+    open($fh, "<", "$path/everything_perl/$file");
     $total = 0;
     @all_ids = ();
     while ($line = <$fh>){
