@@ -79,10 +79,10 @@ use Heap;
         my $self = {
             freqtab => shift,
             hufftree => undef,
+            codetab => %codetab,
             @_ => shift
         };
         
-
         my $heap = Heap->new;
         # Building heap by HuffTree
         for my $letter (keys %{$self->{freqtab}}) {
@@ -102,64 +102,53 @@ use Heap;
             last if $heap->empty;
             $heap->add($tree);
         }
-        $self->{hufftree} = $tree;        
+        $self->{hufftree} = $tree;
         bless $self, $class;
+
+        $self->build_codetab($self->{hufftree}, "");        
+        return $self;
     }    
-    
-    # Building heap by Pair
-    # for my $letter (keys %$freqtab) {
-    #     my $pair = Pair->new($letter, $freqtab->{$letter});
-    #     $heap->add($pair);
-    # }
-
-    # while (! $heap->empty) {
-    #     my $pair = $heap->remove;
-    #     print($pair->print . "\n");
-    # }
-
-    
-}
-
-%codetab;
-sub codetab {
-    our %codetab;
-    my ($tree, $path) = (@_);
-    if (defined($tree->letter)) {
-        $codetab{$tree->letter} = $path;
-        return
-    }
-    codetab($tree->left, "$path.");
-    codetab($tree->right, "$path-");
-}
-
-sub encode {
-    our %codetab;
-    my ($str) = shift;
-    my $res = '';
-    foreach (split "", $str) {
-        $res .= $codetab{$_};
-    }
-    return $res;
-}
-
-sub decode {
-    my ($huffman, $coded_str) = (@_);
-    my $res = "";
-    my $tree = $huffman;
-    foreach(split "", $coded_str) {
-        if($_ eq ".") {
-            $tree = $tree->left;
+        
+    sub build_codetab {        
+        my $self = shift;
+        my ($tree, $path) = (@_);
+        if (defined($tree->letter)) {
+            $self->{codetab}{$tree->letter} = $path;
+            return
         }
-        else{
-            $tree = $tree->right;
-        }
-        if (defined $tree->letter){
-            $res .= $tree->letter;
-            $tree = $huffman;
-        }
+        $self->build_codetab($tree->left, "$path.");
+        $self->build_codetab($tree->right, "$path-");
     }
 
-    return $res;
+    sub encode {
+        my $self = shift;
+        my $str = shift;
+        my $res = '';
+        foreach (split "", $str) {
+            $res .= $self->{codetab}{$_};
+        }
+        return $res;
+    }
+
+    sub decode {
+        my $self = shift;
+        my $coded_str = shift;
+        my $res = "";
+        my $tree = $self->{hufftree};
+        foreach(split "", $coded_str) {
+            if($_ eq ".") {
+                $tree = $tree->left;
+            }
+            else{
+                $tree = $tree->right;
+            }
+            if (defined $tree->letter){
+                $res .= $tree->letter;
+                $tree = $self->{hufftree};
+            }
+        }
+        return $res;
+    }   
 }
 
 my $file = "the_gold_bug.txt";
@@ -179,14 +168,12 @@ while (my $line = <$fh>) {
 my $huffman = Huffman->new(\%freqtab);
 # print(Dumper($huffman->{hufftree}));
 
-
-codetab($huffman->{hufftree}, "");
-#print(Dumper(\%codetab));
-
 my $str = "abc";
-my $encode = encode("abc");
-my $decode = decode($huffman->{hufftree}, $encode);
+my $encode = $huffman->encode($str);
+my $decode = $huffman->decode($encode);
 
 print("my str: $str\n");
 print("encode: $encode\n");
 print("decode: $decode\n");
+
+1;
