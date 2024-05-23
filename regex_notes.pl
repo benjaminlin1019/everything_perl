@@ -48,7 +48,12 @@ sub regular_expr_fun {
 
     # Write a regular expression that matches all lines that begin and end with the same character.
     $exe_pat = '^(.).*\1$';
-    grep_file($exe_pat, "/usr/share/dict/words");
+    #grep_file($exe_pat, "/usr/share/dict/words");
+    $exe_pat = '/^(n\/a|\s*)$/i';
+    $str = 'rev_share_57907';
+    if ($str =~ m/$exp_pat/) {
+        print "match";
+    }
 }
 
 sub grep_file {
@@ -66,4 +71,4 @@ sub grep_file {
     }
 }
 
-regular_expr_fun();
+#regular_expr_fun();
